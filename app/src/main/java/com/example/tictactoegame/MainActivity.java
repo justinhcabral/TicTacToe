@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
           image8 = findViewById(R.id.iv_image8);
           image9 = findViewById(R.id.iv_image9);
 
+// TODO: Try to find a way to not hard code the winning combinations, make it so that the program deems it a win as long as three consecutive symbols are connected.
+        /*
+        if(
+         */
+
           combinationsList.add(new int[]{0,1,2});
           combinationsList.add(new int[]{3,4,5});
           combinationsList.add(new int[]{6,7,8});
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
           playerOneName.setText(getPlayerOneName);
           playerTwoName.setText(getPlayerTwoName);
+
+          // TODO: Find a way so that you don't need to hardcode the lines below whenever you click a box
 
           image1.setOnClickListener(new View.OnClickListener() {
               @Override
@@ -245,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         playerTurn = 1;
 
         totalSelectedBoxes = 1;
-
+// TODO : Just loop this.
         image1.setImageResource(R.drawable.transparent_back);
         image2.setImageResource(R.drawable.transparent_back);
         image3.setImageResource(R.drawable.transparent_back);
