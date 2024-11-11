@@ -30,6 +30,7 @@
         >
         
         <ImageView
+            android:id="@+id/iv_player1"
             android:layout_marginStart="20dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -63,6 +64,7 @@
         >
 
         <ImageView
+            android:id="@+id/iv_player2"
             android:layout_marginStart="20dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -83,6 +85,18 @@
             android:textColor="#FFFFFF"
             />
     </LinearLayout>
+<!--    TODO: Add switch symbol feature-->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_switch_symbols"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Switch Symbols"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/round_back_purple1000"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start_game"
@@ -90,11 +104,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="12dp"
         android:text="Start Game"
         android:textColor="#FFFFFF"
         android:background="@drawable/round_back_blue1000"
         />
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

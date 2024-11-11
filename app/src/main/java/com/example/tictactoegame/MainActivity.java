@@ -1,6 +1,7 @@
 package com.example.tictactoegame;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout playerOneLayout, playerTwoLayout;
     private TextView playerOneName, playerTwoName;
+
+    private Drawable playerOneSym;
+    private Drawable playerTwoSym;
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8, image9;
 
     @Override
@@ -47,6 +52,23 @@ public class MainActivity extends AppCompatActivity {
 
           playerOneLayout = findViewById(R.id.ll_player_one_layout);
           playerTwoLayout = findViewById(R.id.ll_player_two_layout);
+
+          boolean imageSwap = getIntent().getBooleanExtra("imageSwap", false);
+          final ImageView ivPlayerOne = findViewById(R.id.iv_player1);
+          final ImageView ivPlayerTwo = findViewById(R.id.iv_player2);
+
+
+        if (imageSwap) {
+            ivPlayerOne.setImageResource(R.drawable.circle);
+            playerOneSym = ResourcesCompat.getDrawable(getResources(), R.drawable.circle, null);
+            ivPlayerTwo.setImageResource(R.drawable.cross);
+            playerTwoSym = ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null);
+        } else {
+            ivPlayerOne.setImageResource(R.drawable.cross);
+            playerOneSym = ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null);
+            ivPlayerTwo.setImageResource(R.drawable.circle);
+            playerTwoSym = ResourcesCompat.getDrawable(getResources(), R.drawable.circle, null);
+        }
 
           image1 = findViewById(R.id.iv_image1);
           image2 = findViewById(R.id.iv_image2);
@@ -168,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(playerTurn == 1){
 
-            imageView.setImageResource(R.drawable.cross);
+            imageView.setImageDrawable(playerOneSym);
 
             if(checkPlayerWin()){
 
@@ -188,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 totalSelectedBoxes++;
             }
         } else{
-            imageView.setImageResource(R.drawable.circle);
+            imageView.setImageDrawable(playerTwoSym);
 
             if(checkPlayerWin()){
                 WinDialog winDialog = new WinDialog(MainActivity.this, playerTwoName.getText().toString() + " has won the match", MainActivity.this);
