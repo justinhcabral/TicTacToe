@@ -25,6 +25,15 @@ public class AddPlayers extends AppCompatActivity {
         final ImageView ivPlayerTwo = findViewById(R.id.iv_player2);
         final Button btnSwitchSym = findViewById(R.id.btn_switch_symbols);
         final Button btnStartGame = findViewById(R.id.btn_start_game);
+        final Button btnBackToMenu = findViewById(R.id.btn_back_to_menu);
+
+        btnBackToMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddPlayers.this, Menu.class);
+                startActivity(intent);
+            }
+        });
 
         btnSwitchSym.setOnClickListener(new View.OnClickListener() {
             @Override
