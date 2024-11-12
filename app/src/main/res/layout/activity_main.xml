@@ -242,4 +242,15 @@
                 android:background="@drawable/round_back_dark_blue"/>
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_bottom_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="202210451 : Justin Cabral"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:gravity="start"/>
 </RelativeLayout>
