@@ -35,7 +35,7 @@
             android:gravity="center"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
-            android:text="@string/enter_player_names"
+            android:text="Enter Player Name"
             android:textStyle="bold" />
 
         <!-- Player One Input -->
@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="20dp"
-                android:hint="Player One"
+                android:hint="LePlayer"
                 android:textColorHint="@color/light_white"
                 android:background="@color/dark_blue"
                 android:textColor="#FFFFFF" />
@@ -85,12 +85,13 @@
                 android:src="@drawable/circle"
                 android:adjustViewBounds="true" />
 
-            <EditText
-                android:id="@+id/et_player_two"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="20dp"
-                android:hint="Player Two"
+                android:paddingTop="14dp"
+                android:text="LeCPU"
+                android:textStyle="bold"
                 android:textColorHint="@color/light_white"
                 android:background="@color/dark_blue"
                 android:textColor="#FFFFFF" />
