@@ -26,7 +26,7 @@ public class GameVCPU extends AppCompatActivity {
     private int [] boxPositions = {0,0,0,0,0,0,0,0,0};
     private int playerTurn = 1;
     private int playerImage;
-    private int totalSelectedBoxes = 0;
+    private int totalSelectedBoxes = 1;
     private LinearLayout playerOneLayout, cpuLayout;
     private TextView playerOneName;
     private TextView playerTwoName;
@@ -177,39 +177,59 @@ public class GameVCPU extends AppCompatActivity {
     }
 
     private void cpuMove() {
-        // Find the first available box for the CPU to play
+        // Collect all available box positions (where boxPositions[i] == 0)
+        List<Integer> availablePositions = new ArrayList<>();
         for (int i = 0; i < boxPositions.length; i++) {
             if (boxPositions[i] == 0) {
-                // CPU chooses an empty spot
-                boxPositions[i] = 2;  // CPU is player 2
-                imageViews[i].setImageDrawable(playerTwoSym); // Set the CPU symbol
-                totalSelectedBoxes++;
+                availablePositions.add(i);
+            }
+        }
 
-                // Check if the CPU has won
-                if (checkPlayerWin()) {
-                    highlightWinningCombination();
-                    mediaPlayer = MediaPlayer.create(this, R.raw.win_song);
-                    mediaPlayer.start();
-                    mediaPlayer.setLooping(true);
+        // Check if there are any available positions
+        if (!availablePositions.isEmpty()) {
+            // Select a random available position for the CPU
+            Random random = new Random();
+            int randomIndex = random.nextInt(availablePositions.size());
+            int cpuSelectedBox = availablePositions.get(randomIndex);
 
-                    String winner = playerTwoName.getText().toString();
-                    WinDialog winDialog = new WinDialog(GameVCPU.this, winner + " has won the match", new Runnable() {
-                        @Override
-                        public void run() {
-                            restartMatch(); // Restart the game
-                        }
-                    });
-                    winDialog.setCancelable(false);
-                    winDialog.show();
-                } else if (totalSelectedBoxes < 9) {
-                    // Change turn back to player if the CPU hasn't won yet
-                    changePlayerTurn(1);
-                }
+            // Mark the selected box for the CPU
+            boxPositions[cpuSelectedBox] = 2;  // CPU is player 2
+            imageViews[cpuSelectedBox].setImageDrawable(playerTwoSym); // Set the CPU symbol
+            totalSelectedBoxes++;
 
-                break;  // Exit after making a move
+            // Check if the CPU has won
+            if (checkPlayerWin()) {
+                highlightWinningCombination();
+                mediaPlayer = MediaPlayer.create(this, R.raw.win_song);
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+
+                String winner = playerTwoName.getText().toString();
+                WinDialog winDialog = new WinDialog(GameVCPU.this, winner + " has won the match", new Runnable() {
+                    @Override
+                    public void run() {
+                        restartMatch(); // Restart the game
+                    }
+                });
+                winDialog.setCancelable(false);
+                winDialog.show();
+            } else if (totalSelectedBoxes == 9) {
+                // In case of a draw
+                WinDialog winDialog = new WinDialog(GameVCPU.this, "Draw!!!", new Runnable() {
+                    @Override
+                    public void run() {
+                        restartMatch(); // Restart the game
+                    }
+                });
+                winDialog.setCancelable(false);
+                winDialog.show();
+            } else if (totalSelectedBoxes < 9) {
+                // Change turn back to player if the CPU hasn't won yet
+                changePlayerTurn(1);
             }
         }
     }
+
 
 
     private void stopWinSong() {
@@ -271,15 +291,13 @@ public class GameVCPU extends AppCompatActivity {
             // Winning symbol is circle
             winningHighlight = ResourcesCompat.getDrawable(getResources(), R.drawable.circle_win, null);
         } else {
-            // Unexpected case: if the drawable is neither cross nor circle
             return;
         }
 
-        // Apply the winning highlight to each box in the winning combination
         for (int index : winningCombination) {
             ImageView imageView = getBoxImageViewById(index);
             if (imageView != null) {
-                imageView.setImageDrawable(winningHighlight); // Set the highlight image
+                imageView.setImageDrawable(winningHighlight);
             }
         }
     }
@@ -305,33 +323,19 @@ public class GameVCPU extends AppCompatActivity {
         }
     }
 
-//    private void randomizeTurn() {
-//        Random random = new Random();
-//        playerTurn = random.nextInt(2) + 1;  // Generates either 1 or 2
-//    }
-
     private boolean isBoxSelectable(int boxPosition) {
         return boxPositions[boxPosition] == 0;
     }
 
     void restartMatch() {
-        stopWinSong(); // Stop the song if playing
-        boxPositions = new int[9]; // Reset the board
-        totalSelectedBoxes = 0;  // Reset the number of boxes selected
-//        randomizeTurn();  // Randomize who starts the next match
+        stopWinSong();
+        boxPositions = new int[9];
+        totalSelectedBoxes = 1;
+        winningCombination = null;
+        playerTurn = 1;
 
-        // Clear all the images on the board
         for (ImageView imageView : imageViews) {
             imageView.setImageResource(R.drawable.transparent_back);
-        }
-
-        // Update the UI for player turns
-        if (playerTurn == 1) {
-            playerOneLayout.setBackgroundResource(R.drawable.round_back_blue_border);
-            cpuLayout.setBackgroundResource(R.drawable.round_back_dark_blue);
-        } else {
-            cpuLayout.setBackgroundResource(R.drawable.round_back_blue_border);
-            playerOneLayout.setBackgroundResource(R.drawable.round_back_dark_blue);
         }
     }
 

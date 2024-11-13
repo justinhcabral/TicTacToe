@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private int [] boxPositions = {0,0,0,0,0,0,0,0,0};
 
     private int playerTurn;
-
-    private int totalSelectedBoxes = 0;
+    private int totalSelectedBoxes = 1;
     private LinearLayout playerOneLayout, playerTwoLayout;
     private TextView playerOneName, playerTwoName;
 
@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
             // Change the player turn and update the total selected boxes
             changePlayerTurn(playerTurn == 1 ? 2 : 1);
             totalSelectedBoxes++;
+            Log.d("MainActivity", "Total selected boxes: " + totalSelectedBoxes);
         }
     }
 
@@ -276,7 +277,9 @@ public class MainActivity extends AppCompatActivity {
         stopWinSong(); // Stop the song if playing
         boxPositions = new int[9]; // Reset the board
         playerTurn = 1; // Reset player turn
-        totalSelectedBoxes = 0;
+        totalSelectedBoxes = 1;
+        winningCombination = null;
+        boxPositions = new int[9];
         randomizeTurn();
         for (ImageView imageView : imageViews) {
             imageView.setImageResource(R.drawable.transparent_back);
