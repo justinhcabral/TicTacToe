@@ -18,7 +18,13 @@ public class Menu extends AppCompatActivity {
         final Button btnPlayerVCpu = findViewById(R.id.btn_player_vs_cpu);
         final Button btnPlayerVPlayer = findViewById(R.id.btn_player_vs_player);
 
-//        btnPlayerVCpu.setOnClickListener(); TODO: IMPLEMENT
+        btnPlayerVCpu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Menu.this, AddPVC.class);
+                startActivity(intent);
+            }
+        });
 
         btnPlayerVPlayer.setOnClickListener(new View.OnClickListener() {
             @Override

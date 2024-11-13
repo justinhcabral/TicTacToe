@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AddPVC extends AppCompatActivity {
 
-    private boolean imageSwap = false;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +22,6 @@ public class AddPVC extends AppCompatActivity {
         final EditText playerOne = findViewById(R.id.et_player_one);
         final ImageView ivPlayerOne = findViewById(R.id.iv_player1);
         final ImageView ivPlayerTwo = findViewById(R.id.iv_player2);
-        final Button btnSwitchSym = findViewById(R.id.btn_switch_symbols);
         final Button btnStartGame = findViewById(R.id.btn_start_game);
         final Button btnBack = findViewById(R.id.btn_back);
 
@@ -36,32 +33,15 @@ public class AddPVC extends AppCompatActivity {
             }
         });
 
-        btnSwitchSym.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageSwap = !imageSwap;
-
-                if(imageSwap){
-                    ivPlayerOne.setImageResource(R.drawable.circle);
-                    ivPlayerTwo.setImageResource(R.drawable.cross);
-                } else {
-                    ivPlayerOne.setImageResource(R.drawable.cross);
-                    ivPlayerTwo.setImageResource(R.drawable.circle);
-                }
-            }
-        });
-
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String getPlayerOneName = playerOne.getText().toString();
-
                 if(getPlayerOneName.isEmpty()){
                     Toast.makeText(AddPVC.this, "Please Enter Your Name", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(AddPVC.this, GameVCPU.class);
                     intent.putExtra("playerOne", getPlayerOneName);
-                    intent.putExtra("imageSwap", imageSwap);
                     startActivity(intent);
                 }
             }

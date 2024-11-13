@@ -21,6 +21,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".AddPVC"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".GameVCPU"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".AddPlayers"
             android:exported="true">
         </activity>

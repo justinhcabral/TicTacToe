@@ -2,12 +2,14 @@ package com.example.tictactoegame;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -18,24 +20,29 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private final List<int[]> combinationsList = new ArrayList<>();
+    private int [] winningCombination = null;
 
     private int [] boxPositions = {0,0,0,0,0,0,0,0,0};
 
-    private int playerTurn = 1;
+    private int playerTurn;
 
-    private int totalSelectedBoxes = 1;
-
+    private int totalSelectedBoxes = 0;
     private LinearLayout playerOneLayout, playerTwoLayout;
     private TextView playerOneName, playerTwoName;
 
     private Drawable playerOneSym;
     private Drawable playerTwoSym;
+    private ImageView[] imageViews = new ImageView[9];
     private ImageView image1, image2, image3, image4, image5, image6, image7, image8, image9;
+
+    private MediaPlayer mediaPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        boolean imageSwap = getIntent().getBooleanExtra("imageSwap", false);
 
         final Button backBtn = findViewById(R.id.btn_back);
 
@@ -47,15 +54,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        final ImageView ivPlayerOne = findViewById(R.id.iv_player1);
+        final ImageView ivPlayerTwo = findViewById(R.id.iv_player2);
+
           playerOneName = findViewById(R.id.tv_player_one_name);
           playerTwoName = findViewById(R.id.tv_player_two_name);
-
           playerOneLayout = findViewById(R.id.ll_player_one_layout);
           playerTwoLayout = findViewById(R.id.ll_player_two_layout);
 
-          boolean imageSwap = getIntent().getBooleanExtra("imageSwap", false);
-          final ImageView ivPlayerOne = findViewById(R.id.iv_player1);
-          final ImageView ivPlayerTwo = findViewById(R.id.iv_player2);
+        image1 = findViewById(R.id.iv_image1);
+        image2 = findViewById(R.id.iv_image2);
+        image3 = findViewById(R.id.iv_image3);
+        image4 = findViewById(R.id.iv_image4);
+        image5 = findViewById(R.id.iv_image5);
+        image6 = findViewById(R.id.iv_image6);
+        image7 = findViewById(R.id.iv_image7);
+        image8 = findViewById(R.id.iv_image8);
+        image9 = findViewById(R.id.iv_image9);
+
+          setupBoard();
+          randomizeTurn();
+          generateCombinations();
 
 
         if (imageSwap) {
@@ -70,163 +90,115 @@ public class MainActivity extends AppCompatActivity {
             playerTwoSym = ResourcesCompat.getDrawable(getResources(), R.drawable.circle, null);
         }
 
-          image1 = findViewById(R.id.iv_image1);
-          image2 = findViewById(R.id.iv_image2);
-          image3 = findViewById(R.id.iv_image3);
-          image4 = findViewById(R.id.iv_image4);
-          image5 = findViewById(R.id.iv_image5);
-          image6 = findViewById(R.id.iv_image6);
-          image7 = findViewById(R.id.iv_image7);
-          image8 = findViewById(R.id.iv_image8);
-          image9 = findViewById(R.id.iv_image9);
-
 // TODO: Try to find a way to not hard code the winning combinations, make it so that the program deems it a win as long as three consecutive symbols are connected.
-        /*
-        if(
-         */
-
-          combinationsList.add(new int[]{0,1,2});
-          combinationsList.add(new int[]{3,4,5});
-          combinationsList.add(new int[]{6,7,8});
-          combinationsList.add(new int[]{0,3,6});
-          combinationsList.add(new int[]{1,4,7});
-          combinationsList.add(new int[]{2,5,8});
-          combinationsList.add(new int[]{2,4,6});
-          combinationsList.add(new int[]{0,4,8});
-
           final String getPlayerOneName = getIntent().getStringExtra("playerOne");
           final String getPlayerTwoName = getIntent().getStringExtra("playerTwo");
 
           playerOneName.setText(getPlayerOneName);
           playerTwoName.setText(getPlayerTwoName);
-
-          // TODO: Find a way so that you don't need to hardcode the lines below whenever you click a box
-
-          image1.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-
-                  if(isBoxSelectable(0)){
-                      performAction((ImageView)v,0);
-                  }
-              }
-          });
-
-          image2.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(1)){
-                      performAction((ImageView)v, 1);
-                  }
-              }
-          });
-
-          image3.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(2)){
-                      performAction((ImageView)v,2);
-                  }
-              }
-          });
-
-          image4.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(3)){
-                      performAction((ImageView)v, 3);
-                  }
-              }
-          });
-
-          image5.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(4)){
-                      performAction((ImageView)v,4);
-                  }
-              }
-          });
-
-          image6.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(5)){
-                      performAction((ImageView)v, 5);
-                  }
-              }
-          });
-
-          image7.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(6)){
-                      performAction((ImageView)v, 6);
-                  }
-              }
-          });
-
-          image8.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(7)){
-                      performAction((ImageView)v,7);
-                  }
-              }
-          });
-
-          image9.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if(isBoxSelectable(8)){
-                      performAction((ImageView)v, 8);
-                  }
-              }
-          });
     }
 
-    private void performAction(ImageView imageView, int selectedBoxPosition){
-        boxPositions[selectedBoxPosition] = playerTurn;
+    private void setupBoard(){
+        ImageView [] imageViewIds = {
+                image1, image2, image3,
+                image4, image5, image6,
+                image7, image8, image9
+        };
 
-        if(playerTurn == 1){
-
-            imageView.setImageDrawable(playerOneSym);
-
-            if(checkPlayerWin()){
-
-                WinDialog winDialog = new WinDialog(MainActivity.this, playerOneName.getText().toString() + " has won the match", MainActivity.this);
-                winDialog.setCancelable(false);
-                winDialog.show();
-            }
-
-            else if(totalSelectedBoxes == 9){
-                WinDialog winDialog = new WinDialog(MainActivity.this, "Draw!!!", MainActivity.this);
-                winDialog.setCancelable(false);
-                winDialog.show();
-            }
-            else{
-                changePlayerTurn(2);
-
-                totalSelectedBoxes++;
-            }
-        } else{
-            imageView.setImageDrawable(playerTwoSym);
-
-            if(checkPlayerWin()){
-                WinDialog winDialog = new WinDialog(MainActivity.this, playerTwoName.getText().toString() + " has won the match", MainActivity.this);
-                winDialog.setCancelable(false);
-                winDialog.show();
-            } else if(selectedBoxPosition == 9){
-                WinDialog winDialog = new WinDialog(MainActivity.this, "Draw!!!", MainActivity.this);
-                winDialog.setCancelable(false);
-                winDialog.show();
-            } else {
-                changePlayerTurn(1);
-
-                totalSelectedBoxes++;
-            }
+        for(int i = 0; i < imageViews.length; i++) {
+            imageViews[i] = imageViewIds[i];
+            final int boxIndex = i;
+            imageViews[i].setOnClickListener(v->{
+                if(isBoxSelectable(boxIndex)){
+                    performAction((ImageView) v, boxIndex);
+                }
+            });
         }
     }
+
+    private void generateCombinations() {
+        // Rows
+        for (int i = 0; i < 3; i++) {
+            combinationsList.add(new int[]{i * 3, i * 3 + 1, i * 3 + 2});
+        }
+        // Columns
+        for (int i = 0; i < 3; i++) {
+            combinationsList.add(new int[]{i, i + 3, i + 6});
+        }
+        // Diagonals
+        combinationsList.add(new int[]{0, 4, 8});
+        combinationsList.add(new int[]{2, 4, 6});
+    }
+
+    private ImageView getBoxImageViewById(int index) {
+        switch (index) {
+            case 0: return image1;
+            case 1: return image2;
+            case 2: return image3;
+            case 3: return image4;
+            case 4: return image5;
+            case 5: return image6;
+            case 6: return image7;
+            case 7: return image8;
+            case 8: return image9;
+            default: return null;
+        }
+    }
+
+    private void performAction(ImageView imageView, int selectedBoxPosition) {
+        // Mark the selected box with the current player's symbol
+        boxPositions[selectedBoxPosition] = playerTurn;
+
+        // Set the image for the selected box based on the player's symbol
+        imageView.setImageDrawable(playerTurn == 1 ? playerOneSym : playerTwoSym);
+
+        // Check if the current player has won
+        if (checkPlayerWin()) {
+
+            // Highlight the winning combination
+            highlightWinningCombination();
+
+//             Play the win song
+            mediaPlayer = MediaPlayer.create(this, R.raw.win_song);
+            mediaPlayer.start();
+            mediaPlayer.setLooping(true);
+
+            // Show the win dialog
+            String winner = (playerTurn == 1 ? playerOneName : playerTwoName).getText().toString();
+            WinDialog winDialog = new WinDialog(MainActivity.this, winner + " has won the match", new Runnable() {
+                @Override
+                public void run() {
+                    restartMatch(); // Call the method that restarts the game in MainActivity
+                }
+            });
+            winDialog.setCancelable(false);
+            winDialog.show();
+
+        } else if (totalSelectedBoxes == 9) {
+            // In case of a draw
+            WinDialog winDialog = new WinDialog(MainActivity.this, "Draw!!!", new Runnable() {
+                @Override
+                public void run() {
+                    restartMatch(); // Call the method that restarts the game in MainActivity
+                }
+            });
+            winDialog.setCancelable(false);
+            winDialog.show();
+        } else {
+            // Change the player turn and update the total selected boxes
+            changePlayerTurn(playerTurn == 1 ? 2 : 1);
+            totalSelectedBoxes++;
+        }
+    }
+
+    private void stopWinSong() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 
     private void changePlayerTurn(int currentPlayerTurn){
 
@@ -241,48 +213,73 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkPlayerWin(){
+    private boolean checkPlayerWin() {
+        for (int[] combination : combinationsList) {
+            if (boxPositions[combination[0]] == playerTurn &&
+                    boxPositions[combination[1]] == playerTurn &&
+                    boxPositions[combination[2]] == playerTurn) {
 
-        boolean response = false;
-
-        for(int i=0;i<combinationsList.size(); i++){
-
-            final int[] combination = combinationsList.get(i);
-
-            if(boxPositions[combination[0]] == playerTurn && boxPositions[combination[1]] == playerTurn && boxPositions[combination[2]] == playerTurn){
-                response = true;
-
+                winningCombination = combination;
+                return true;
             }
         }
-        return response;
+        return false;
     }
 
-    private boolean isBoxSelectable(int boxPosition){
+    private void highlightWinningCombination() {
+        // Assume `winningCombination` is populated and non-null
+        int winningBoxIndex = winningCombination[0];
+        ImageView winningBoxImage = getBoxImageViewById(winningBoxIndex);
 
-        boolean response = false;
+        if (winningBoxImage == null) return; // Safeguard against null reference
 
-        if(boxPositions[boxPosition] == 0){
-            response = true;
+        // Determine the symbol in the winning box by directly comparing to known drawables
+        Drawable winningSymbolDrawable = winningBoxImage.getDrawable();
+        Drawable winningHighlight;
+
+        // Check if the winning box contains the cross or circle symbol
+        Drawable crossDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.cross, null);
+        Drawable circleDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.circle, null);
+
+        if (winningSymbolDrawable != null &&
+                winningSymbolDrawable.getConstantState().equals(crossDrawable.getConstantState())) {
+            // Winning symbol is cross
+            winningHighlight = ResourcesCompat.getDrawable(getResources(), R.drawable.cross_win, null);
+        } else if (winningSymbolDrawable != null &&
+                winningSymbolDrawable.getConstantState().equals(circleDrawable.getConstantState())) {
+            // Winning symbol is circle
+            winningHighlight = ResourcesCompat.getDrawable(getResources(), R.drawable.circle_win, null);
+        } else {
+            // Unexpected case: if the drawable is neither cross nor circle
+            return;
         }
 
-        return response;
+        // Apply the winning highlight to each box in the winning combination
+        for (int index : winningCombination) {
+            ImageView imageView = getBoxImageViewById(index);
+            if (imageView != null) {
+                imageView.setImageDrawable(winningHighlight); // Set the highlight image
+            }
+        }
     }
 
-    void restartMatch(){
-        boxPositions = new int[]{0,0,0,0,0,0,0,0,0};
+    private void randomizeTurn() {
+        Random random = new Random();
+        playerTurn = random.nextInt(2) + 1;  // Generates either 1 or 2
+    }
 
-        playerTurn = 1;
+    private boolean isBoxSelectable(int boxPosition) {
+        return boxPositions[boxPosition] == 0;
+    }
 
-        totalSelectedBoxes = 1;
-// TODO : Just loop this.
-        image1.setImageResource(R.drawable.transparent_back);
-        image2.setImageResource(R.drawable.transparent_back);
-        image3.setImageResource(R.drawable.transparent_back);
-        image4.setImageResource(R.drawable.transparent_back);
-        image5.setImageResource(R.drawable.transparent_back);
-        image6.setImageResource(R.drawable.transparent_back);
-        image7.setImageResource(R.drawable.transparent_back);
-        image8.setImageResource(R.drawable.transparent_back);
-        image9.setImageResource(R.drawable.transparent_back);
+    void restartMatch() {
+        stopWinSong(); // Stop the song if playing
+        boxPositions = new int[9]; // Reset the board
+        playerTurn = 1; // Reset player turn
+        totalSelectedBoxes = 0;
+        randomizeTurn();
+        for (ImageView imageView : imageViews) {
+            imageView.setImageResource(R.drawable.transparent_back);
+        }
     }
 }

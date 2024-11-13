@@ -12,18 +12,17 @@ import androidx.annotation.NonNull;
 public class WinDialog extends Dialog {
 
     private final String message;
-    private final MainActivity mainActivity;
+    private final Runnable restartAction;
 
-    public WinDialog(@NonNull Context context, String message, MainActivity mainActivity) {
+    public WinDialog(@NonNull Context context, String message, Runnable restartAction) {
         super(context);
         this.message = message;
-        this.mainActivity = mainActivity;
+        this.restartAction = restartAction;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.win_dialog_layout);
 
         final TextView messageTxt = findViewById(R.id.tv_message_txt);
@@ -34,11 +33,9 @@ public class WinDialog extends Dialog {
         btnStartAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                mainActivity.restartMatch();
+                restartAction.run(); // Run the restart action
                 dismiss();
             }
         });
-
     }
 }
