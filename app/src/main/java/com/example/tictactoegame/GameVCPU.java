@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,7 +27,7 @@ public class GameVCPU extends AppCompatActivity {
     private int [] boxPositions = {0,0,0,0,0,0,0,0,0};
     private int playerTurn = 1;
     private int playerImage;
-    private int totalSelectedBoxes = 1;
+    private int totalSelectedBoxes = 0;
     private LinearLayout playerOneLayout, cpuLayout;
     private TextView playerOneName;
     private TextView playerTwoName;
@@ -164,10 +165,11 @@ public class GameVCPU extends AppCompatActivity {
             });
             winDialog.setCancelable(false);
             winDialog.show();
-        } else {
+        } else if (totalSelectedBoxes < 9){
             // Change the player turn and update the total selected boxes
-            changePlayerTurn(playerTurn == 1 ? 2 : 1);
             totalSelectedBoxes++;
+            changePlayerTurn(2);
+
 
             // If it's CPU's turn, trigger CPU move
             if (playerTurn == 2) {
@@ -196,6 +198,7 @@ public class GameVCPU extends AppCompatActivity {
             boxPositions[cpuSelectedBox] = 2;  // CPU is player 2
             imageViews[cpuSelectedBox].setImageDrawable(playerTwoSym); // Set the CPU symbol
             totalSelectedBoxes++;
+            Log.d("GameVCPU", "Total selected boxes: " + totalSelectedBoxes);
 
             // Check if the CPU has won
             if (checkPlayerWin()) {
@@ -330,7 +333,7 @@ public class GameVCPU extends AppCompatActivity {
     void restartMatch() {
         stopWinSong();
         boxPositions = new int[9];
-        totalSelectedBoxes = 1;
+        totalSelectedBoxes = 0;
         winningCombination = null;
         playerTurn = 1;
 
